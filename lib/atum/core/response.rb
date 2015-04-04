@@ -10,9 +10,7 @@ module Atum
       end
 
       def json?
-        content_type = @response.headers['Content-Type'] ||
-                       @response.headers['content-type'] || ''
-        content_type.include?('application/json')
+        @response.headers['Content-Type'].to_s =~ %r{application/.*json}
       end
 
       def error?

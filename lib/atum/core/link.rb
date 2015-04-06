@@ -26,6 +26,7 @@ module Atum
         root_url, @path_prefix = unpack_url(url)
         http_adapter = options[:http_adapter] || [:net_http]
         @connection = Faraday.new(url: root_url) do |faraday|
+          faraday.use :instrumentation
           faraday.adapter(*http_adapter)
         end
         @link_schema = link_schema

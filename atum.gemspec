@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'erubis', '~> 2.7'
   spec.add_dependency 'faraday', '>= 0.8.9'
+  spec.add_dependency 'faraday_middleware', '>= 0.9.1'
   spec.add_dependency 'activesupport', '~> 4.1'
   spec.add_dependency 'thor', '~> 0.19'
 end

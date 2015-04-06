@@ -72,7 +72,7 @@ module <%= @module_name %>
   def self.default_options
     {
       default_headers: {
-        <%= @default_headers.merge(
+        <%= @default_headers.reverse_merge(
             'User-Agent' => '#{user_agent}',
             'Content-Type' => 'application/json'
           ).map do |k, v|

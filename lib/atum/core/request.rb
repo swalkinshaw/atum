@@ -17,10 +17,10 @@ module Atum
 
         return response.body unless response.json?
 
-        if response.limit.nil?
-          unenvelope(response.body)
-        else
+        if response.paginated?
           Paginator.new(self, response, options).enumerator
+        else
+          unenvelope(response.body)
         end
       end
 

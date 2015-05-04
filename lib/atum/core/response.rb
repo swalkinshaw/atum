@@ -27,6 +27,14 @@ module Atum
         @response.status >= 400
       end
 
+      def links
+        unless json?
+          raise ResponseError, 'Cannot fetch links for non JSON response'
+        end
+
+        json_body.fetch('links', {})
+      end
+
       def meta
         unless json?
           raise ResponseError, 'Cannot fetch meta for non JSON response'
@@ -35,8 +43,8 @@ module Atum
         json_body.fetch('meta', {})
       end
 
-      def limit
-        meta.fetch('limit', nil)
+      def paginated?
+        !links['next'].nil?
       end
 
       private

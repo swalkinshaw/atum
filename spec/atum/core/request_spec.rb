@@ -104,14 +104,12 @@ describe Atum::Core::Request do
       end
 
       context 'and is paginated' do
-        let(:limit) { 50 }
-        let(:response) { { 'things' => (0..limit).map { |i| "item_#{i}" } } }
         let(:stub) do
           stub_request(:get, full_path)
             .to_return(body: {
-              resources: response,
-              meta: {
-                limit: limit, cursors: { before: 'beforeID', after: 'afterID' }
+              resources: {},
+              links: {
+                next: '/things?page=next'
               }
             }.to_json, headers: { 'Content-Type' => 'application/json' })
         end

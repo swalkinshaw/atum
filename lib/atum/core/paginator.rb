@@ -1,8 +1,8 @@
+require 'rack/utils'
+
 module Atum
   module Core
     class Paginator
-      LIMIT_INCREMENT = 50
-
       def initialize(request, initial_response, options)
         @request = request
         @options = options
@@ -11,19 +11,22 @@ module Atum
 
       def enumerator
         response = @initial_response
+
         Enumerator.new do |yielder|
           loop do
             items = @request.unenvelope(response.body)
             items.each { |item| yielder << item }
 
-            break if items.count < response.limit
+            break unless response.paginated?
+
+            pagination_query_string = URI.parse(response.links['next']).query
 
             new_options = @options.dup
             new_options[:query] = @options.fetch(:query, {}).merge(
-              after: response.meta['cursors']['after'],
-              limit: response.limit + LIMIT_INCREMENT)
+              Rack::Utils.parse_nested_query(pagination_query_string)
+            )
 
-            response = @request.make_request(new_options)
+            response = Response.new(@request.make_request(new_options))
           end
         end.lazy
       end

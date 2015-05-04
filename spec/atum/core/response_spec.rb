@@ -106,8 +106,8 @@ describe Atum::Core::Response do
     end
   end
 
-  describe 'limit' do
-    subject(:method) { -> { api_response.limit } }
+  describe 'paginated?' do
+    subject(:method) { -> { api_response.paginated? } }
 
     it_behaves_like 'it needs the response to be json'
 
@@ -116,22 +116,22 @@ describe Atum::Core::Response do
         allow(api_response).to receive(:json?) { true }
         allow(api_response).to receive(:json_body) { body }
       end
+
       subject { method.call }
-      let(:limit) { double }
 
-      context 'and limit is present' do
-        let(:body) { { 'meta' => { 'limit' => limit } } }
-        it { is_expected.to eq(limit) }
+      context 'and next link is present' do
+        let(:body) { { 'links' => { 'next' => '/resource?page=next' } } }
+        it { is_expected.to eq(true) }
       end
 
-      context 'and limit is not present' do
-        let(:body) { { 'meta' => {} } }
-        it { is_expected.to eq(nil) }
+      context 'and next link is nil' do
+        let(:body) { { 'links' => { 'next' => nil } } }
+        it { is_expected.to eq(false) }
       end
 
-      context 'and meta is not present' do
+      context 'and next link is not present' do
         let(:body) { {} }
-        it { is_expected.to eq(nil) }
+        it { is_expected.to eq(false) }
       end
     end
   end

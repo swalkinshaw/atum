@@ -6,9 +6,6 @@ module Atum
   module Core
     # A link invokes requests with an HTTP server.
     class Link
-      # The amount limit is increased on each successive fetch in pagination
-      LIMIT_INCREMENT = 50
-
       # Instantiate a link.
       #
       # @param url [String] The URL to use when making requests.  Include the
@@ -61,18 +58,6 @@ module Atum
 
       def build_path(*parameters)
         @path_prefix + @link_schema.construct_path(*parameters)
-      end
-
-      def apply_link_schema(hash)
-        definitions = @link_schema.resource_schema.definitions
-        hash.each do |k, v|
-          next unless definitions.fetch(k, {}).fetch('format', nil)
-          case definitions[k]['format']
-          when 'date-time'
-            hash[k] = Time.parse(v) unless v.nil?
-          end
-        end
-        hash
       end
 
       def unpack_url(url)
